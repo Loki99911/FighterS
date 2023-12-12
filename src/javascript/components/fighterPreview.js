@@ -8,7 +8,24 @@ export function createFighterPreview(fighter, position) {
     });
 
     // todo: show fighter info (image, name, health, etc.)
-
+    if (fighter) {
+        const { name, health, attack, defense } = fighter;
+        // eslint-disable-next-line no-use-before-define
+        const fiterImg = createFighterImage(fighter);
+        fiterImg.classList.add('fighter-preview___img');
+        if (position === 'right') {
+            fiterImg.classList.add('fighter-preview___mirror');
+        }
+        const nameInfoElement = document.createElement('h3');
+        nameInfoElement.textContent = name;
+        const healthInfoElement = document.createElement('p');
+        healthInfoElement.textContent = `Health: ${health}`;
+        const attackInfoElement = document.createElement('p');
+        attackInfoElement.textContent = `Attack: ${attack}`;
+        const defenseInfoElement = document.createElement('p');
+        defenseInfoElement.textContent = `Defense: ${defense}`;
+        fighterElement.append(nameInfoElement, healthInfoElement, attackInfoElement, defenseInfoElement, fiterImg);
+    }
     return fighterElement;
 }
 
