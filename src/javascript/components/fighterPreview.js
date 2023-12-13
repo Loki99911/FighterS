@@ -1,5 +1,21 @@
 import createElement from '../helpers/domHelper';
 
+export function createFighterImage(fighter) {
+    const { source, name } = fighter;
+    const attributes = {
+        src: source,
+        title: name,
+        alt: name
+    };
+    const imgElement = createElement({
+        tagName: 'img',
+        className: 'fighter-preview___img',
+        attributes
+    });
+
+    return imgElement;
+}
+
 export function createFighterPreview(fighter, position) {
     const positionClassName = position === 'right' ? 'fighter-preview___right' : 'fighter-preview___left';
     const fighterElement = createElement({
@@ -10,7 +26,6 @@ export function createFighterPreview(fighter, position) {
     // todo: show fighter info (image, name, health, etc.)
     if (fighter) {
         const { name, health, attack, defense } = fighter;
-        // eslint-disable-next-line no-use-before-define
         const fiterImg = createFighterImage(fighter);
         fiterImg.classList.add('fighter-preview___img');
         if (position === 'right') {
@@ -27,20 +42,4 @@ export function createFighterPreview(fighter, position) {
         fighterElement.append(nameInfoElement, healthInfoElement, attackInfoElement, defenseInfoElement, fiterImg);
     }
     return fighterElement;
-}
-
-export function createFighterImage(fighter) {
-    const { source, name } = fighter;
-    const attributes = {
-        src: source,
-        title: name,
-        alt: name
-    };
-    const imgElement = createElement({
-        tagName: 'img',
-        className: 'fighter-preview___img',
-        attributes
-    });
-
-    return imgElement;
 }

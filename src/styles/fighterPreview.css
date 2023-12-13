@@ -9,6 +9,12 @@
         margin: 0;
         padding: 0;
     }
+    h3{
+        font-size: 24px;
+        color: #ba0303;        
+        margin: 0;
+        padding: 0;
+    }
 }
 
 .fighter-preview___right {
@@ -21,6 +27,7 @@
 
 .fighter-preview___img {
     height: 200px;
+    margin-top: 30px;
 }
 .fighter-preview___mirror {
     transform: scaleX(-1);

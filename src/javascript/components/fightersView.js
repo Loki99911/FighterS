@@ -22,8 +22,6 @@ function createFighter(fighter, selectFighter) {
     const imageElement = createImage(fighter);
     const onClick = event => selectFighter(event, fighter._id);
 
-    // вставить логику отображения характеристик
-
     fighterElement.append(imageElement);
     fighterElement.addEventListener('click', onClick, false);
 
