@@ -35,7 +35,18 @@ function keyUp(e) {
     keydownState.delete(e.code);
 }
 
-function keyDown(e, firstFighter, secondFighter, resolve, changeFirstFighter, changeSecondFighter) {
+function keyDown(
+    e,
+    firstFighter,
+    secondFighter,
+    resolve,
+    changeFirstFighter,
+    changeSecondFighter,
+    firstFighterCritTime,
+    secondFighterCritTime,
+    changeFirstFighterCritTime,
+    changeSecondFighterCritTime
+) {
     keydownState.add(e.code);
     // Do normal hit by first player
     if (keydownState.has(controls.PlayerOneAttack) && !keydownState.has(controls.PlayerOneBlock)) {
@@ -46,12 +57,13 @@ function keyDown(e, firstFighter, secondFighter, resolve, changeFirstFighter, ch
         changeSecondFighter(damage);
     }
     // Do critical hit by first player
-    if (controls.PlayerOneCriticalHitCombination.every(elem => keydownState.has(elem))) {
+    if (controls.PlayerOneCriticalHitCombination.every(elem => keydownState.has(elem)) && !firstFighterCritTime) {
         const damage = getCriticalDamage(firstFighter);
         changeSecondFighter(damage);
+        changeFirstFighterCritTime();
     }
     // Do normal hit by second player
-    if (keydownState.has(controls.PlayerTwoAttack) && !keydownState.has(controls.PlayerTwoAttack)) {
+    if (keydownState.has(controls.PlayerTwoAttack) && !keydownState.has(controls.PlayerTwoBlock)) {
         let damage = getDamage(secondFighter, null);
         if (keydownState.has(controls.PlayerOneBlock)) {
             damage = getDamage(secondFighter, firstFighter);
@@ -59,9 +71,10 @@ function keyDown(e, firstFighter, secondFighter, resolve, changeFirstFighter, ch
         changeFirstFighter(damage);
     }
     // Do critical hit by second player
-    if (controls.PlayerTwoCriticalHitCombination.every(elem => keydownState.has(elem))) {
+    if (controls.PlayerTwoCriticalHitCombination.every(elem => keydownState.has(elem)) && !secondFighterCritTime) {
         const damage = getCriticalDamage(secondFighter);
         changeFirstFighter(damage);
+        changeSecondFighterCritTime();
     }
     // Check the winner
     if (firstFighter.health <= 0) {
@@ -78,18 +91,51 @@ function keyDown(e, firstFighter, secondFighter, resolve, changeFirstFighter, ch
 export async function fight(firstFighter, secondFighter) {
     const currentFirstFighter = { ...firstFighter };
     const currentSecondFighter = { ...secondFighter };
+    const firstFighterDom = document.getElementById('left-fighter-indicator');
+    const secondFighterDom = document.getElementById('right-fighter-indicator');
+    let firstFighterCritTime = 0;
+    let secondFighterCritTime = 0;
+
+    setInterval(() => {
+        firstFighterCritTime = Math.max(0, firstFighterCritTime - 1000);
+        secondFighterCritTime = Math.max(0, secondFighterCritTime - 1000);
+        firstFighterDom.innerText = firstFighterCritTime ? `${firstFighterCritTime / 1000}s` : '';
+        secondFighterDom.innerText = secondFighterCritTime ? `${secondFighterCritTime / 1000}s` : '';
+    }, 1000);
+
     const changeFirstFighter = damage => {
         currentFirstFighter.health -= damage;
-        // console.log(currentFirstFighter, damage);
+        firstFighterDom.style.width = `${(currentFirstFighter.health * 100) / firstFighter.health}%`;
     };
+
     const changeSecondFighter = damage => {
         currentSecondFighter.health -= damage;
-        // console.log(currentSecondFighter, damage);
+        secondFighterDom.style.width = `${(currentSecondFighter.health * 100) / secondFighter.health}%`;
     };
+
+    const changeFirstFighterCritTime = () => {
+        firstFighterCritTime = 10000;
+    };
+
+    const changeSecondFighterCritTime = () => {
+        secondFighterCritTime = 10000;
+    };
+
     return new Promise(resolve => {
         // resolve the promise with the winner when fight is over
         document.addEventListener('keydown', e =>
-            keyDown(e, currentFirstFighter, currentSecondFighter, resolve, changeFirstFighter, changeSecondFighter)
+            keyDown(
+                e,
+                currentFirstFighter,
+                currentSecondFighter,
+                resolve,
+                changeFirstFighter,
+                changeSecondFighter,
+                firstFighterCritTime,
+                secondFighterCritTime,
+                changeFirstFighterCritTime,
+                changeSecondFighterCritTime
+            )
         );
         document.addEventListener('keyup', keyUp);
     });
