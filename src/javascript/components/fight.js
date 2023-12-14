@@ -31,6 +31,7 @@ export function getCriticalDamage(attacker) {
     const { attack } = attacker;
     return attack * 2;
 }
+
 function keyUp(e) {
     keydownState.delete(e.code);
 }
@@ -99,18 +100,26 @@ export async function fight(firstFighter, secondFighter) {
     setInterval(() => {
         firstFighterCritTime = Math.max(0, firstFighterCritTime - 1000);
         secondFighterCritTime = Math.max(0, secondFighterCritTime - 1000);
-        firstFighterDom.innerText = firstFighterCritTime ? `${firstFighterCritTime / 1000}s` : '';
-        secondFighterDom.innerText = secondFighterCritTime ? `${secondFighterCritTime / 1000}s` : '';
+        firstFighterDom.innerText = firstFighterCritTime ? ` ${firstFighterCritTime / 1000}s` : '';
+        secondFighterDom.innerText = secondFighterCritTime ? ` ${secondFighterCritTime / 1000}s` : '';
     }, 1000);
 
     const changeFirstFighter = damage => {
         currentFirstFighter.health -= damage;
         firstFighterDom.style.width = `${(currentFirstFighter.health * 100) / firstFighter.health}%`;
+        if (currentFirstFighter.health <= 0) {
+            firstFighterDom.style.padding = 0;
+            firstFighterDom.style.width = 0;
+        }
     };
 
     const changeSecondFighter = damage => {
         currentSecondFighter.health -= damage;
         secondFighterDom.style.width = `${(currentSecondFighter.health * 100) / secondFighter.health}%`;
+        if (currentSecondFighter.health <= 0) {
+            secondFighterDom.style.padding = 0;
+            secondFighterDom.style.width = 0;
+        }
     };
 
     const changeFirstFighterCritTime = () => {

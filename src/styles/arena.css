@@ -64,8 +64,9 @@
 
 #left-fighter-indicator,
 #right-fighter-indicator {
-    color: red;
+    color: #ba0303;
+    font-size: 24px;
     display: flex;
-    align-items: center;
     padding-left: 10px;
+    align-items: center;
 }

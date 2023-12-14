@@ -27,7 +27,7 @@ export function createFighterPreview(fighter, position) {
     if (fighter) {
         const { name, health, attack, defense } = fighter;
         const fiterImg = createFighterImage(fighter);
-        fiterImg.classList.add('fighter-preview___img');
+        // fiterImg.classList.add('fighter-preview___img');
         if (position === 'right') {
             fiterImg.classList.add('fighter-preview___mirror');
         }
